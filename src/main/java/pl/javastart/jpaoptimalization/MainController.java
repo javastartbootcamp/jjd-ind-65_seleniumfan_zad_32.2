@@ -3,12 +3,13 @@ package pl.javastart.jpaoptimalization;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import pl.javastart.jpaoptimalization.country.Country;
+import pl.javastart.jpaoptimalization.country.CountryCityPopulationDto;
 import pl.javastart.jpaoptimalization.country.CountryService;
-import pl.javastart.jpaoptimalization.countrylanguage.CountryLanguage;
 import pl.javastart.jpaoptimalization.countrylanguage.CountryLanguageService;
+import pl.javastart.jpaoptimalization.countrylanguage.LanguageWithCountriesProjection;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MainController {
@@ -24,7 +25,7 @@ public class MainController {
 
     @GetMapping("/najwieksze-miasta")
     public String countryWithBiggestCity(Model model) {
-        List<Country> countries = countryService.findAll();
+        List<CountryCityPopulationDto> countries = countryService.findCountryWithLargestCityPopulation();
         model.addAttribute("countries", countries);
 
         return "countryWithBiggestCity";
@@ -32,19 +33,18 @@ public class MainController {
 
     @GetMapping("/kraje-i-jezyki")
     public String countryWithLanguages(Model model) {
-        List<Country> countries = countryService.findAll();
+        Map<String, Map<String, Double>> countryWithLanguage = countryService.findCountryWithLanguage();
 
-        model.addAttribute("countries", countries);
+        model.addAttribute("countries", countryWithLanguage);
 
         return "countryWithLanguages";
     }
 
     @GetMapping("/jezyki-i-kraje")
     public String languagesWithCountries(Model model) {
-        List<CountryLanguage> languages = countryLanguageService.findAll();
+        List<LanguageWithCountriesProjection> languages = countryLanguageService.findLanguageWithCountries();
 
         model.addAttribute("languages", languages);
-
         return "languagesWithCountries";
     }
 
